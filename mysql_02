@@ -1,10 +1,13 @@
+mysql技术总结2：
 一、事务：是mysql的执行最小单元，也就是原子性；要么执行成功，要么执行失败；
 1) 在 MySQL 中只有使用了 Innodb 数据库引擎的数据库或表才支持事务。
 2) 事务处理可以用来维护数据库的完整性，保证成批的 SQL 语句要么全部执行，要么全部不执行。
 3) 事务用来管理 insert,update,delete 语句。
 mysql> start transaction;#手动开启事务
 mysql> commit
-举例：比如一个银行转账业务，A向B转账100元，B 向C转账200元；中间临时（A->money-100,B->money+100; B->money -200, C->money+200）数据会暂存在under log 临时表中，当事务结束后，更新数据：将undo log update（临时表的计算结果：A->money-100;B->money-100;C->money+200）写到到行表中；
+举例：比如一个银行转账业务，A向B转账100元，B 向C转账200元；中间临时（A->money-100,B->money+100; B->money -200, C->money+200）
+数据会暂存在under log 临时表中，当事务结束后，更新数据：将undo log update（临时表的计算结果：A->money-100;B->money-100;C->money+200）
+写到到行表中；因此, 事务回滚操作依赖于undo log;
 
 二、事务四大特性：原子性，一致性，隔离性，持久性；
 三、隔离级别：

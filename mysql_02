@@ -56,3 +56,19 @@ InnoDB 两种内部使用的意向锁（ Intention Locks ），这两种意向�
 比如建一张表：teacher(id, name);
 Id->主键索引， 数据结构b+tree；
 name->普通索引，数据结构b+tree;
+
+七、bin log：
+存储执行语句（对数据库的数据进行操作的语句：create, insert, update）的执行记录[记录了执行的语句，select * from tablename； 
+在bin log 中没有记录]
+如果创建一张表，数据库执行下面的语句：
+create table teacher (
+ id int not null auto_increment,
+ `name` varchar(20)
+) engine = MyISAM;
+这条执行语句会记录在bin log 中。
+
+bin log作用：
+1.mysql集群中数据的回复[即数据回滚]，比如我们现在拿到前一天的数据[假设数据库设置定时1day定时保存数据]，可以用bin log恢复到
+今天到现在指定时间的数据；
+2.在主从模式中的主从同步。Master写入数据，bin log发生改变，master会主动通知salver更新数据；salver中的io线程读bin log再写到
+relay log，再由sql线程写入DB中。 
